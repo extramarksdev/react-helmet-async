@@ -24,31 +24,40 @@ export const isDocument = !!(
 );
 
 export default class HelmetData implements HelmetDataType {
-  instances = [];
-  canUseDOM = isDocument;
+  instances: HelmetDispatcher[];
+  canUseDOM: boolean;
   context: HelmetDataContext;
-
-  value = {
-    setHelmet: (serverState: HelmetServerState) => {
-      this.context.helmet = serverState;
-    },
+  value: {
+    setHelmet: (serverState: HelmetServerState) => void;
     helmetInstances: {
-      get: () => (this.canUseDOM ? instances : this.instances),
-      add: (instance: HelmetDispatcher) => {
-        (this.canUseDOM ? instances : this.instances).push(instance);
-      },
-      remove: (instance: HelmetDispatcher) => {
-        const index = (this.canUseDOM ? instances : this.instances).indexOf(instance);
-        (this.canUseDOM ? instances : this.instances).splice(index, 1);
-      },
-    },
+      get: () => HelmetDispatcher[];
+      add: (instance: HelmetDispatcher) => void;
+      remove: (instance: HelmetDispatcher) => void;
+    };
   };
 
-  constructor(context: any, canUseDOM?: boolean) {
+  constructor(context: any, canUseDOM: boolean = false) {
+    this.instances = [];
     this.context = context;
-    this.canUseDOM = canUseDOM || false;
+    this.canUseDOM = canUseDOM || isDocument;
 
-    if (!canUseDOM) {
+    this.value = {
+      setHelmet: (serverState: HelmetServerState) => {
+        this.context.helmet = serverState;
+      },
+      helmetInstances: {
+        get: () => (this.canUseDOM ? instances : this.instances),
+        add: (instance: HelmetDispatcher) => {
+          (this.canUseDOM ? instances : this.instances).push(instance);
+        },
+        remove: (instance: HelmetDispatcher) => {
+          const index = (this.canUseDOM ? instances : this.instances).indexOf(instance);
+          (this.canUseDOM ? instances : this.instances).splice(index, 1);
+        },
+      },
+    };
+
+    if (!this.canUseDOM) {
       context.helmet = mapStateOnServer({
         baseTag: [],
         bodyAttributes: {},
