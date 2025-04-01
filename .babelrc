@@ -1,0 +1,13 @@
+{
+    "presets": [
+      ["@babel/preset-env", {
+        "targets": {
+          "browsers": ["Android >= 4.4"]
+        }
+      }]
+    ],
+    "plugins": [
+      "@babel/plugin-proposal-class-properties"
+    ]
+  }
+  

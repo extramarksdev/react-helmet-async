@@ -37,9 +37,10 @@ export default class HelmetData implements HelmetDataType {
   };
 
   constructor(context: any, canUseDOM: boolean = false) {
+    // Initialize class properties in constructor
     this.instances = [];
-    this.context = context;
     this.canUseDOM = canUseDOM || isDocument;
+    this.context = context;
 
     this.value = {
       setHelmet: (serverState: HelmetServerState) => {
@@ -52,7 +53,9 @@ export default class HelmetData implements HelmetDataType {
         },
         remove: (instance: HelmetDispatcher) => {
           const index = (this.canUseDOM ? instances : this.instances).indexOf(instance);
-          (this.canUseDOM ? instances : this.instances).splice(index, 1);
+          if (index > -1) {
+            (this.canUseDOM ? instances : this.instances).splice(index, 1);
+          }
         },
       },
     };
